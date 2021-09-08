@@ -16,9 +16,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class TicketController {
@@ -109,4 +114,33 @@ public class TicketController {
     public String getFoos5(@RequestParam List<String> id) {
         return "IDs are " + id;
     }
+
+//    Cookie
+
+    //Them cookie
+    @GetMapping("/addCookie")
+    public String setCookie(HttpServletResponse response) {
+        // create a cookie
+        Cookie cookie = new Cookie("username", "Jovan");
+
+        //add cookie to response
+        response.addCookie(cookie);
+
+        return "Username is add!";
+    }
+
+    //Doc cookie
+    @GetMapping("/all-cookies")
+    public String readAllCookies(HttpServletRequest request) {
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            return Arrays.stream(cookies)
+                    .map(c -> c.getName() + "=" + c.getValue()).collect(Collectors.joining(", "));
+        }
+
+        return "No cookies";
+    }
+
+
 }
