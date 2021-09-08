@@ -2,25 +2,37 @@ package com.javatechie.spring.mysql.api.controller;
 
 import com.javatechie.spring.mysql.api.dao.TicketDao;
 import com.javatechie.spring.mysql.api.model.Ticket;
+import com.javatechie.spring.mysql.api.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/ticket")
 public class TicketController {
     @Autowired
-    private TicketDao dao;
+    private TicketService ticketService;
 
-    @PostMapping("/bookTickets")
-    public String bookTicket(@RequestBody List<Ticket> tickets){
-        dao.saveAll(tickets);
-        return "ticket booked: " + tickets.size();
-    }
-    @GetMapping("/getTickets")
+    @RequestMapping("/tickets")
     public List<Ticket> getTickets(){
-        return (List<Ticket>) dao.findAll();
+        return ticketService.getTickets();
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/tickets")
+    public void add(@RequestBody Ticket ticket){
+        ticketService.addTicket(ticket);
+    }
+
+    @RequestMapping(value = "/students/{id}", method = RequestMethod.GET)
+    public Ticket getATicket(@PathVariable Integer id){
+        return ticketService.getATicket(id);
+    }
+    @RequestMapping(value =  "/students/{id}", method = RequestMethod.DELETE)
+    public  void deleteTicket(@PathVariable Integer id){
+        ticketService.deleteTicket(id);
+    }
+    @RequestMapping(value =  "/students/{id}", method = RequestMethod.DELETE)
+    public  void updateTicket(@PathVariable Integer id, @RequestBody Ticket ticket){
+        ticketService.updateTicket(id,ticket);
+    }
 }
